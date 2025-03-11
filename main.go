@@ -11,7 +11,6 @@ import (
 	"os/exec"
 	"os/signal"
 	"strconv"
-	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -195,12 +194,6 @@ func streamAudio(vc *discordgo.VoiceConnection) error {
 	
 	log.Println("Connected to audio stream")
 	log.Println("Content-Type:", resp.Header.Get("Content-Type"))
-	
-	for name, values := range resp.Header {
-		if strings.HasPrefix(strings.ToLower(name), "icy-") {
-			log.Printf("%s: %s\n", name, values[0])
-		}
-	}
 
 	vc.Speaking(true)
 	defer vc.Speaking(false)
@@ -273,6 +266,8 @@ func startAPIServer() {
 	http.HandleFunc("/voice", handleVoice)
 	http.HandleFunc("/restart", handleRestart)
 	
+	http.Handle("/", http.FileServer(http.Dir("./frontend")))
+
 	listenAddr := fmt.Sprintf(":%s", apiPort)
 	log.Printf("Starting API server on %s", listenAddr)
 	if err := http.ListenAndServe(listenAddr, nil); err != nil {
