@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = window.location.origin;
 
 const statusDot = document.getElementById("statusDot");
 const statusText = document.getElementById("statusText");
